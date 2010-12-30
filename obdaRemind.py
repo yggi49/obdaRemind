@@ -20,6 +20,16 @@ MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
 STATUS_TEXT = 'l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, q:quit'
 
 
+def check_output(command):
+    '''Run a command with arguments and return its output as a byte string.'''
+    process = subprocess.Popen(command, stdout=subprocess.PIPE)
+    output, unused_err = process.communicate()
+    retcode = process.poll()
+    if retcode:
+        raise subprocess.CalledProcessError(retcode, command, output=output)
+    return output
+
+
 class TextBox(object):
     ALIGN_RIGHT = 'rjust'
     ALIGN_LEFT = 'ljust'
@@ -192,7 +202,7 @@ class ObdaRemind(object):
                 month=MONTHS[new_date.month - 1], year=new_date.year,
             ))
             # Load reminders and update date boxes.
-            reminders = subprocess.check_output([
+            reminders = check_output([
                 'remind', '-gaaad', '-p', '-s+6',
                 os.path.expanduser('~/.reminders'),
                 '1', new_date.strftime('%b'), new_date.strftime('%Y'),
