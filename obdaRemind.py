@@ -205,7 +205,7 @@ class ObdaRemind(object):
             reminders = check_output([
                 'remind', '-gaaad', '-p', '-s+6',
                 os.path.expanduser('~/.reminders'),
-                '1', new_date.strftime('%b'), new_date.strftime('%Y'),
+                '1', MONTHS[new_date.month - 1][:3], str(new_date.year),
             ]).decode('utf-8')
             self.calendar = collections.defaultdict(list)
             for reminder in reminders.split('\n')[5:-2]:
