@@ -113,8 +113,8 @@ class DateBox(TextBox):
     def get_text(self):
         text = [str(self.date.day)]
         if self.reminders:
-            text[0] += ' ({})'.format(len(self.reminders))
-        text.extend(['•{}'.format(r) for r in self.reminders])
+            text[0] += ' ({0})'.format(len(self.reminders))
+        text.extend(['•{0}'.format(r) for r in self.reminders])
         return '\n'.join(text)
 
 
@@ -222,7 +222,7 @@ class ObdaRemind(object):
         notes = [new_date.strftime('%a, %b %d, %y')]
         selected_index = (new_date - first_sunday).days
         notes.extend([
-            '•{}'.format(r)
+            '•{0}'.format(r)
             for r in self.boxes['days'][selected_index].get_reminders()
         ])
         self.boxes['notes'].set_text('\n\n'.join(notes))
