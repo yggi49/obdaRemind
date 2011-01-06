@@ -260,7 +260,7 @@ class ObdaRemind(object):
             try:
                 key = self.scr.getkey().lower()
             except curses.error as e:
-                if e.message == 'no input':
+                if e.args[0] == 'no input':
                     key = ''
                     self.redraw()
                     self.set_date(self.selected)
