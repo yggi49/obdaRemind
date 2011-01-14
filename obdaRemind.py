@@ -17,7 +17,8 @@ WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday']
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December']
-STATUS_TEXT = 'l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, q:quit'
+STATUS_TEXT = ('l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, q:quit'
+               ', scroll info area with , (up) and . (down)')
 
 
 def check_output(command):
@@ -45,6 +46,8 @@ class TextBox(object):
         self.text = text
         self.align = align
         self.wrapper = textwrap.TextWrapper(width=width)
+        self.content_height = 0
+        self.offset = 0
 
     def relocate(self, x, y, width, height):
         self.x = x
@@ -70,7 +73,7 @@ class TextBox(object):
         for i in range(self.height):
             self._addstr(self.x, self.y + i, ' ' * self.width, highlight)
 
-    def render(self, highlight=False):
+    def render(self, highlight=False, offset=0):
         if self.height < 1 or self.width < 1:
             return
         self.clear(highlight)
@@ -80,14 +83,26 @@ class TextBox(object):
             lines.extend(self.wrapper.fill(para).split('\n'))
         if self.align != TextBox.ALIGN_LEFT:
             lines = [getattr(line, self.align)(self.width) for line in lines]
-        for i in range(min(len(lines), self.height)):
-            self._addstr(self.x, self.y + i, lines[i], highlight)
+        self.content_height = len(lines)
+        self.offset = max(0, min(offset, self.content_height - self.height))
+        for i in range(min(self.content_height, self.height)):
+            self._addstr(self.x, self.y + i,
+                         lines[i + self.offset], highlight)
+
+    def scroll(self, lines):
+        self.render(offset=self.offset + lines)
+
+    def scroll_down(self):
+        self.scroll(1)
+
+    def scroll_up(self):
+        self.scroll(-1)
 
     def set_text(self, text, align=None):
         self.text = text
         if align:
             self.align = align
-        self.render()
+        self.render(offset=0)
 
     def get_text(self):
         return self.text
@@ -291,6 +306,10 @@ class ObdaRemind(object):
                 self.jump_years(1)
             elif key == 'p':
                 self.jump_years(-1)
+            elif key == ',':
+                self.boxes['notes'].scroll_down()
+            elif key == '.':
+                self.boxes['notes'].scroll_up()
 
 
 if __name__ == '__main__':
