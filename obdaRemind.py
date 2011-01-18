@@ -18,7 +18,7 @@ WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December']
 STATUS_TEXT = ('l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, q:quit'
-               ', scroll info area with , (up) and . (down)')
+               ', scroll info area with , (down) and . (up)')
 
 
 def check_output(command):
