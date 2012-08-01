@@ -17,8 +17,8 @@ WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday']
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December']
-STATUS_TEXT = ('l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, q:quit'
-               ', scroll info area with , (down) and . (up)')
+STATUS_TEXT = ('l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, '
+               'x:redraw, q:quit, scroll info area with , (down) and . (up)')
 
 
 def check_output(command):
@@ -273,42 +273,45 @@ class ObdaRemind(object):
         self.set_date(self.today)
         while True:
             try:
-                key = self.scr.getkey().lower()
+                key = self.scr.getch()
             except curses.error as e:
                 if e.args[0] == 'no input':
-                    key = ''
-                    self.redraw()
-                    self.set_date(self.selected)
+                    key = ord('x')
                 else:
                     raise
             self.today = datetime.date.today()
-            if key == 'q':
+            if key == curses.KEY_RESIZE:
+                key = ord('x')
+            if key == ord('q'):
                 break
-            elif key == 't':
+            elif key == ord('t'):
                 self.set_date(self.today)
-            elif key == 'r':
+            elif key == ord('x'):
+                self.redraw()
+                self.set_date(self.selected)
+            elif key == ord('r'):
                 date = self.selected
                 self.selected = None
                 self.set_date(date)
-            elif key == 'l':
+            elif key == ord('l'):
                 self.jump_days(1)
-            elif key == 'h':
+            elif key == ord('h'):
                 self.jump_days(-1)
-            elif key == 'j':
+            elif key == ord('j'):
                 self.jump_days(7)
-            elif key == 'k':
+            elif key == ord('k'):
                 self.jump_days(-7)
-            elif key == 'f':
+            elif key == ord('f'):
                 self.jump_months(1)
-            elif key == 'b':
+            elif key == ord('b'):
                 self.jump_months(-1)
-            elif key == 'n':
+            elif key == ord('n'):
                 self.jump_years(1)
-            elif key == 'p':
+            elif key == ord('p'):
                 self.jump_years(-1)
-            elif key == ',':
+            elif key == ord(','):
                 self.boxes['notes'].scroll_down()
-            elif key == '.':
+            elif key == ord('.'):
                 self.boxes['notes'].scroll_up()
 
 
