@@ -154,7 +154,7 @@ class ObdaRemind(object):
         # Calculate dimensions of date boxes, notes area, and status bar.
         scr_height, scr_width = self.scr.getmaxyx()
         datebox_width = (scr_width - 8) // 9
-        datebox_height = (scr_height - 9) // 6
+        datebox_height = (scr_height - 11) // 6
         notes_width = scr_width - (datebox_width + 1) * 7 - 2
         notes_height = scr_height
         notes_border = scr_width - notes_width - 1
@@ -234,7 +234,7 @@ class ObdaRemind(object):
         else:
             self.boxes['days'][(self.selected - first_sunday).days].render()
         # Update the notes box.
-        notes = [new_date.strftime('%a, %b %d, %y')]
+        notes = [new_date.strftime('%a, %b %d, %y').decode('utf-8')]
         selected_index = (new_date - first_sunday).days
         notes.extend([
             '•{0}'.format(r)
