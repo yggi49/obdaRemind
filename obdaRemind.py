@@ -234,7 +234,7 @@ class ObdaRemind(object):
         else:
             self.boxes['days'][(self.selected - first_sunday).days].render()
         # Update the notes box.
-        notes = [new_date.strftime('%a, %b %d, %y')]
+        notes = [new_date.strftime('%a, %b %d, %y').decode('utf-8')]
         selected_index = (new_date - first_sunday).days
         notes.extend([
             '•{0}'.format(r)
