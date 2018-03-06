@@ -205,13 +205,14 @@ class ObdaRemind(object):
         first_weekday = datetime.date.weekday(first_date)
         first_sunday = first_date \
                        - datetime.timedelta(days=(first_weekday + 1) % 7)
+        first_monday = first_sunday + datetime.timedelta(1)
         # Load a new month?
         if (not self.selected or
             new_date.month != self.selected.month or
             new_date.year != self.selected.year):
             # Update month name and week numbers.
             for i, box in enumerate(self.boxes['weeknumbers']):
-                first_of_week = first_date + datetime.timedelta(weeks=i)
+                first_of_week = first_monday + datetime.timedelta(weeks=i)
                 box.set_text(str(first_of_week.isocalendar()[1]))
             self.boxes['header'].set_text('{month} {year}'.format(
                 month=MONTHS[new_date.month - 1], year=new_date.year,
