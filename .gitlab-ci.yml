@@ -1,0 +1,41 @@
+---
+
+# Defaults
+# ========
+
+default:
+  image: python:3.8.16
+  before_script:
+    - pip install pre-commit
+
+
+# Stages
+# ======
+
+stages:
+  - test
+
+
+# Stage: “test”
+# --------------
+
+.test:
+  stage: test
+  script:
+    - pre-commit run -a
+
+test:py38:
+  extends: .test
+  image: python:3.8.16
+
+test:py39:
+  extends: .test
+  image: python:3.9.16
+
+test:py310:
+  extends: .test
+  image: python:3.10.11
+
+test:py311:
+  extends: .test
+  image: python:3.11.3
