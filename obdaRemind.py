@@ -1,7 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
+#!/usr/bin/env python3
 
 import collections
 import curses
@@ -19,16 +16,6 @@ MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December']
 STATUS_TEXT = ('l/h:±1d, j/k:±1w, f/b:±1m, n/p:±1y, t:today, r:reload, '
                'x:redraw, q:quit, scroll info area with , (down) and . (up)')
-
-
-def check_output(command):
-    '''Run a command with arguments and return its output as a byte string.'''
-    process = subprocess.Popen(command, stdout=subprocess.PIPE)
-    output, unused_err = process.communicate()
-    retcode = process.poll()
-    if retcode:
-        raise subprocess.CalledProcessError(retcode, command, output=output)
-    return output
 
 
 class TextBox(object):
@@ -59,12 +46,10 @@ class TextBox(object):
 
     def _addstr(self, pos_x, pos_y, text, highlight=False):
         style = curses.A_REVERSE if highlight else curses.A_NORMAL
-        if sys.version_info < (3,):
-            text = text.encode('utf-8')
         try:
             self.scr.addstr(pos_y, pos_x, text, style)
         except curses.error as e:
-            if e.args[0] == 'addstr() returned ERR':
+            if e.args[0] == 'addwstr() returned ERR':
                 self.scr.addstr(pos_y, pos_x, text[:-1])
             else:
                 raise
@@ -218,11 +203,11 @@ class ObdaRemind(object):
                 month=MONTHS[new_date.month - 1], year=new_date.year,
             ))
             # Load reminders and update date boxes.
-            reminders = check_output([
+            reminders = subprocess.check_output([
                 'remind', '-gaaad', '-p', '-s+6',
                 os.path.expanduser('~/.reminders'),
                 '1', MONTHS[new_date.month - 1][:3], str(new_date.year),
-            ]).decode('utf-8')
+            ], encoding='utf-8')
             self.calendar = collections.defaultdict(list)
             for reminder in reminders.split('\n')[5:-2]:
                 date, _, _, _, _, description = reminder.split(' ', 5)
@@ -235,7 +220,7 @@ class ObdaRemind(object):
         else:
             self.boxes['days'][(self.selected - first_sunday).days].render()
         # Update the notes box.
-        notes = [new_date.strftime('%a, %b %d, %y').decode('utf-8')]
+        notes = [new_date.strftime('%a, %b %d, %y')]
         selected_index = (new_date - first_sunday).days
         notes.extend([
             '•{0}'.format(r)
