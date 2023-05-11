@@ -1,0 +1,45 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: end-of-file-fixer
+        name: Final Newline Checking
+      - id: trailing-whitespace
+        name: Trailing Whitespace Checking
+        args:
+          - "--markdown-linebreak-ext=md"
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        name: Black Code Formatting
+        args:
+          - "--line-length=79"
+          - "--target-version=py38"
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.263
+    hooks:
+      - id: ruff
+        name: Ruff Code Linting
+        args:
+          - "--line-length=79"
+          - "--target-version=py38"
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.31.0
+    hooks:
+      - id: yamllint
+        name: YAML Style Checking
+
+  - repo: https://github.com/yunojuno/pre-commit-xenon
+    rev: v0.1
+    hooks:
+      - id: xenon
+        name: Xenon Code Complexity Checking
+        args:
+          - "--max-absolute=C"
+          - "--max-modules=A"
+          - "--max-average=A"
