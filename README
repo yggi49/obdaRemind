@@ -1,5 +1,0 @@
-obdaRemind is a simple curses frontend for [Remind][1], featuring only a
-navigable month calendar view.  It is written in Python, and runs under both
-Python 2 and 3, using only the standard library.
-
-  [1]: http://www.roaringpenguin.com/products/remind
